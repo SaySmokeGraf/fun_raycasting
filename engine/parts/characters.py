@@ -1,16 +1,21 @@
-"""Модуль с объектами для проекта."""
+"""Модуль с объектами для движка."""
 
 from math import sin, cos, pi
+
 from config import *
 
 
-LIST_DISTS = list(range(0, L_RENDER * STEPS_PER_UNIT))
-for i in range(len(LIST_DISTS)):
-    LIST_DISTS[i] /= STEPS_PER_UNIT
+class Player:
+    """Класс игрока."""
 
+    def __init__(self, x0: int | float, y0: int | float) -> None:
+        """Инициализация экземпляра класса.
 
-class Player(object):
-    def __init__(self, x0, y0):
+        :param x0: начальная координата x
+        :type x0: int | float
+        :param y0: начальная координата y
+        :type y0: int | float
+        """
         self.x = x0
         self.y = y0
         self.phi = PHI_START
@@ -24,7 +29,8 @@ class Player(object):
         self.moving_cam_cw = False
         self.moving_cam_ccw = False
     
-    def move(self):
+    def move(self) -> None:
+        """Произвести перемещение и вращение."""
         if self.moving_front:
             self._move_onedir(dphi=Direct.FRONT)
         if self.moving_left:
@@ -40,31 +46,15 @@ class Player(object):
             self.phi += self.cam_v
             if self.phi > 360: self.phi -= 360
     
-    def _move_onedir(self, dphi=0):
+    def _move_onedir(self, dphi: int | float = 0) -> None:
+        """Перемещение в одном направлении.
+
+        :param dphi: угол направления движения относительно направления взгляда
+        игрока в градусах, по умолчанию 0
+        :type dphi: int | float
+        """
         self.x += self.v * cos((self.phi + dphi) * pi / 180)
         self.y += -self.v * sin((self.phi + dphi) * pi / 180)
-
-
-class Level(object):
-    def __init__(self):
-        self._read_data_from_map()
-    
-    def _read_data_from_map(self):
-        f = open(PATH_MAP, 'r')
-        self.lvl_map = f.read().splitlines()
-        f.close()
-        
-        for i in range(len(self.lvl_map)):
-            self.lvl_map[i] = [square for square in self.lvl_map[i]]
-            if 'x' in self.lvl_map[i]:
-                player_floor_y0 = i
-                player_floor_x0 = self.lvl_map[i].index('x')
-                self.lvl_map[player_floor_y0][player_floor_x0] = '0'
-
-        self.y_max = len(self.lvl_map)
-        self.x_max = len(self.lvl_map[0])
-        self.player_x0 = player_floor_x0 + 0.5
-        self.player_y0 = player_floor_y0 + 0.5
 
 
 if __name__ == "__main__":
