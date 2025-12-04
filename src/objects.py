@@ -1,10 +1,10 @@
 """Модуль с объектами для проекта."""
 
 from math import sin, cos, pi
-from src.config import *
+from config import *
 
 
-LIST_DISTS = list(range(0, L_RENDER*STEPS_PER_UNIT))
+LIST_DISTS = list(range(0, L_RENDER * STEPS_PER_UNIT))
 for i in range(len(LIST_DISTS)):
     LIST_DISTS[i] /= STEPS_PER_UNIT
 
@@ -14,8 +14,8 @@ class Player(object):
         self.x = x0
         self.y = y0
         self.phi = PHI_START
-        self.v = PLAYER_SPEED/FPS
-        self.cam_v = PLAYER_CAM_SPEED/FPS
+        self.v = PLAYER_SPEED / FPS
+        self.cam_v = PLAYER_CAM_SPEED / FPS
 
         self.moving_front = False
         self.moving_left = False
@@ -41,8 +41,9 @@ class Player(object):
             if self.phi > 360: self.phi -= 360
     
     def _move_onedir(self, dphi=0):
-        self.x += self.v*cos((self.phi+dphi)*pi/180)
-        self.y += -self.v*sin((self.phi+dphi)*pi/180)
+        self.x += self.v * cos((self.phi + dphi) * pi / 180)
+        self.y += -self.v * sin((self.phi + dphi) * pi / 180)
+
 
 class Level(object):
     def __init__(self):
