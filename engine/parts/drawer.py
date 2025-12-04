@@ -20,7 +20,17 @@ class Drawer:
 
     def upd_screen(self, x: int | float, y: int | float,
                     phi: int | float, map: list[list[str]]) -> None:
-        """Обновить экран."""
+        """Обновить экран.
+
+        :param x: координата x игрока
+        :type x: int | float
+        :param y: координата y игрока
+        :type y: int | float
+        :param phi: направление взгряда игрока в градусах
+        :type phi: int | float
+        :param map: карта уровня
+        :type map: list[list[str]]
+        """
         pygame.draw.rect(self._screen, (0, 0, 0), (0, 0, H_RES, V_RES))
         one_step = FOV / H_RES
         max_angle = phi + FOV / 2
@@ -53,8 +63,25 @@ class Drawer:
             
         pygame.display.update()
 
-    def _send_ray(self, x: int | float, y: int | float,
-                  phi: int | float, map: list[list[str]]) -> None:
+    def _send_ray(self, x: int | float, y: int | float, phi: int | float,
+                  map: list[list[str]]) -> tuple[int | float | None]:
+        """Отправить луч.
+
+        :param x: координата x точки отправления луча
+        :type x: int | float
+        :param y: координата y точки отправления луча
+        :type y: int | float
+        :param phi: угол направления луча
+        :type phi: int | float
+        :param map: карта
+        :type map: list[list[str]]
+
+        :return: набор данных об окончании пути луча в формате: x в клетках, y
+        в клетках, расстояние до точки пересечения со стеной. В случае
+        окончания по предельному расстоянию рендера возвращает None, None,
+        длину рендера
+        :rtype: tuple[int | float | None]
+        """
         one_step_x = RAY_ONE_STEP * cos(phi * pi / 180)
         one_step_y = RAY_ONE_STEP * sin(phi * pi / 180)
 

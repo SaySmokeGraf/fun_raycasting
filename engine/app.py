@@ -10,7 +10,8 @@ from engine.parts.drawer import Drawer
 class App:
     """Класс приложения."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Инициализация экземпляра класса."""
         pygame.init()
         self._flag_running = True
         self._clock = pygame.time.Clock()
@@ -22,7 +23,8 @@ class App:
         self._scene = Scene()
         self._drawer = Drawer(screen)
 
-    def run(self):
+    def run(self) -> None:
+        """Запуск основного рабочего цикла приложения."""
         while self._flag_running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -55,7 +57,7 @@ class App:
                 x, y = self._scene.player.x, self._scene.player.y
                 phi = self._scene.player.phi
                 level_map = self._scene.lvl_map
-                
+
                 self._scene.solve_collisions()
                 self._drawer.upd_screen(x, y, phi, level_map)
                 self._clock.tick(FPS)
