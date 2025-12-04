@@ -8,7 +8,7 @@ from src.config import *
 from src.objects import *
 
 
-class App(object):
+class App:
     def __init__(self):
         pygame.init()
         self.flag_running = True
@@ -27,34 +27,27 @@ class App(object):
                 if event.type == pygame.QUIT:
                     self.flag_running = False
                     pygame.quit()
-                
+                    break
+
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w:
-                        self.player.moving_front = True
-                    if event.key == pygame.K_a:
-                        self.player.moving_left = True
-                    if event.key == pygame.K_s:
-                        self.player.moving_back = True
-                    if event.key == pygame.K_d:
-                        self.player.moving_right = True
-                    if event.key == pygame.K_LEFT:
-                        self.player.moving_cam_ccw = True
-                    if event.key == pygame.K_RIGHT:
-                        self.player.moving_cam_cw = True
-                    
-                if event.type == pygame.KEYUP:
-                    if event.key == pygame.K_w:
-                        self.player.moving_front = False
-                    if event.key == pygame.K_a:
-                        self.player.moving_left = False
-                    if event.key == pygame.K_s:
-                        self.player.moving_back = False
-                    if event.key == pygame.K_d:
-                        self.player.moving_right = False
-                    if event.key == pygame.K_LEFT:
-                        self.player.moving_cam_ccw = False
-                    if event.key == pygame.K_RIGHT:
-                        self.player.moving_cam_cw = False
+                    flag_active = True
+                elif event.type == pygame.KEYUP:
+                    flag_active = False
+                else:
+                    continue
+                
+                if event.key == pygame.K_w:
+                    self.player.moving_front = flag_active
+                elif event.key == pygame.K_a:
+                    self.player.moving_left = flag_active
+                elif event.key == pygame.K_s:
+                    self.player.moving_back = flag_active
+                elif event.key == pygame.K_d:
+                    self.player.moving_right = flag_active
+                elif event.key == pygame.K_LEFT:
+                    self.player.moving_cam_ccw = flag_active
+                elif event.key == pygame.K_RIGHT:
+                    self.player.moving_cam_cw = flag_active
             
             self.player.move()
             self._solve_collisions()
