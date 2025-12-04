@@ -1,3 +1,5 @@
+"""Модуль с объектами для проекта."""
+
 from math import sin, cos, pi
 from src.config import *
 
@@ -62,3 +64,8 @@ class Level(object):
         self.x_max = len(self.lvl_map[0])
         self.player_x0 = player_floor_x0 + 0.5
         self.player_y0 = player_floor_y0 + 0.5
+
+
+if __name__ == "__main__":
+    print(__doc__)
+    input('Введите Enter, чтобы выйти.')

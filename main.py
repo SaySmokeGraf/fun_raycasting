@@ -1,4 +1,4 @@
-"""Main app intrance point."""
+"""Главный скрипт."""
 
 import pygame
 
