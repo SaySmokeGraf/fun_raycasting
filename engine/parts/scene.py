@@ -2,8 +2,9 @@
 
 from math import floor
 
-from config import PATH_MAP
 from engine.parts.characters import Player
+from engine.parts.map import Map
+from levels.level1 import PLAYER_PHI0, PLAYER_X0, PLAYER_Y0, MAP_SCHEME
 
 
 class Scene:
@@ -11,32 +12,14 @@ class Scene:
 
     def __init__(self) -> None:
         """Инициализация экземпляра класса."""
-        self._read_data_from_map()
-        self.player = Player(self.player_x0, self.player_y0)
-    
-    def _read_data_from_map(self) -> None:
-        """Прочитать карту."""
-        f = open(PATH_MAP, 'r')
-        self.lvl_map = f.read().splitlines()
-        f.close()
-        
-        for i in range(len(self.lvl_map)):
-            self.lvl_map[i] = [square for square in self.lvl_map[i]]
-            if 'x' in self.lvl_map[i]:
-                player_floor_y0 = i
-                player_floor_x0 = self.lvl_map[i].index('x')
-                self.lvl_map[player_floor_y0][player_floor_x0] = '0'
-
-        self.y_max = len(self.lvl_map)
-        self.x_max = len(self.lvl_map[0])
-        self.player_x0 = player_floor_x0 + 0.5
-        self.player_y0 = player_floor_y0 + 0.5
+        self.map = Map(MAP_SCHEME)
+        self.player = Player(PLAYER_X0, PLAYER_Y0, PLAYER_PHI0)
 
     def solve_collisions(self):
         """Разрешить коллизии по необходимости."""
         floor_x = floor(self.player.x)
         floor_y = floor(self.player.y)
-        if self.lvl_map[floor_y][floor_x] == '1':
+        if self.map.get_cell(floor_x, floor_y) == 1:
             dists = {'left': self.player.x - floor_x,
                      'right': floor_x + 1 - self.player.x,
                      'up': self.player.y - floor_y,
@@ -58,7 +41,7 @@ class Scene:
 
             floor_x = floor(self.player.x)
             floor_y = floor(self.player.y)
-            if self.lvl_map[floor_y][floor_x] == '1':
+            if self.map.get_cell(floor_x, floor_y) == 1:
                 key_min = min(dists, key=dists.get)
 
                 if key_min == 'left':

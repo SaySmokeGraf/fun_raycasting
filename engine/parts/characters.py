@@ -2,13 +2,15 @@
 
 from math import sin, cos, pi
 
-from config import *
+from engine.app_config import Direct
+from engine.settings import PLAYER_CAM_SPEED, PLAYER_SPEED, FPS
 
 
 class Player:
     """Класс игрока."""
 
-    def __init__(self, x0: int | float, y0: int | float) -> None:
+    def __init__(self, x0: int | float, y0: int | float,
+                 phi0: int | float) -> None:
         """Инициализация экземпляра класса.
 
         :param x0: начальная координата x
@@ -18,7 +20,7 @@ class Player:
         """
         self.x = x0
         self.y = y0
-        self.phi = PHI_START
+        self.phi = phi0
         self.v = PLAYER_SPEED / FPS
         self.cam_v = PLAYER_CAM_SPEED / FPS
 

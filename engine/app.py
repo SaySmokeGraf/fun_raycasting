@@ -2,7 +2,8 @@
 
 import pygame
 
-from config import *
+from engine.app_config import PATH_ICON
+from engine.settings import H_RES, V_RES, FPS
 from engine.parts.scene import Scene
 from engine.parts.drawer import Drawer
 
@@ -56,7 +57,7 @@ class App:
                 self._scene.player.move()
                 x, y = self._scene.player.x, self._scene.player.y
                 phi = self._scene.player.phi
-                level_map = self._scene.lvl_map
+                level_map = self._scene.map
 
                 self._scene.solve_collisions()
                 self._drawer.upd_screen(x, y, phi, level_map)
