@@ -19,7 +19,7 @@ class Scene:
         """Разрешить коллизии по необходимости."""
         floor_x = floor(self.player.x)
         floor_y = floor(self.player.y)
-        if self.map.get_cell(floor_x, floor_y) == 1:
+        if self.map.get(floor_x, floor_y) == 1:
             dists = {'left': self.player.x - floor_x,
                      'right': floor_x + 1 - self.player.x,
                      'up': self.player.y - floor_y,
@@ -41,7 +41,7 @@ class Scene:
 
             floor_x = floor(self.player.x)
             floor_y = floor(self.player.y)
-            if self.map.get_cell(floor_x, floor_y) == 1:
+            if self.map.get(floor_x, floor_y) == 1:
                 key_min = min(dists, key=dists.get)
 
                 if key_min == 'left':

@@ -93,7 +93,7 @@ class Drawer:
             floor_x = floor(x)
             floor_y = floor(y)
 
-            if map.get_cell(floor_x, floor_y) == 1:
+            if map.get(floor_x, floor_y) == 1:
                 return floor_x, floor_y, r
             
         return None, None, L_RENDER
