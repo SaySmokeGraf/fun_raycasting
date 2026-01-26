@@ -21,8 +21,8 @@ class Player:
         self.x = x0
         self.y = y0
         self.angle = angle0
-        self.speed = PLAYER_SPEED / FPS
-        self.cam_speed = PLAYER_CAM_SPEED / FPS
+        self._speed = PLAYER_SPEED / FPS
+        self._cam_speed = PLAYER_CAM_SPEED / FPS
 
         self.moving_front = False
         self.moving_left = False
@@ -42,10 +42,10 @@ class Player:
         if self.moving_right:
             self._move_onedir(dangle=Direct.RIGHT)
         if self.moving_cam_cw:
-            self.angle -= self.cam_speed
+            self.angle -= self._cam_speed
             if self.angle < 0: self.angle += 360
         if self.moving_cam_ccw:
-            self.angle += self.cam_speed
+            self.angle += self._cam_speed
             if self.angle > 360: self.angle -= 360
     
     def _move_onedir(self, dangle: int | float = 0) -> None:
@@ -55,8 +55,8 @@ class Player:
         игрока в градусах, по умолчанию 0
         :type dangle: int | float
         """
-        self.x += self.speed * cos((self.angle + dangle) * pi / 180)
-        self.y += -self.speed * sin((self.angle + dangle) * pi / 180)
+        self.x += self._speed * cos((self.angle + dangle) * pi / 180)
+        self.y += -self._speed * sin((self.angle + dangle) * pi / 180)
 
 
 if __name__ == "__main__":
