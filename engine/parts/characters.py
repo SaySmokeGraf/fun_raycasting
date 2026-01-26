@@ -10,7 +10,7 @@ class Player:
     """Класс игрока."""
 
     def __init__(self, x0: int | float, y0: int | float,
-                 phi0: int | float) -> None:
+                 angle0: int | float) -> None:
         """Инициализация экземпляра класса.
 
         :param x0: начальная координата x
@@ -20,9 +20,9 @@ class Player:
         """
         self.x = x0
         self.y = y0
-        self.phi = phi0
-        self.v = PLAYER_SPEED / FPS
-        self.cam_v = PLAYER_CAM_SPEED / FPS
+        self.angle = angle0
+        self.speed = PLAYER_SPEED / FPS
+        self.cam_speed = PLAYER_CAM_SPEED / FPS
 
         self.moving_front = False
         self.moving_left = False
@@ -34,29 +34,29 @@ class Player:
     def move(self) -> None:
         """Произвести перемещение и вращение."""
         if self.moving_front:
-            self._move_onedir(dphi=Direct.FRONT)
+            self._move_onedir(dangle=Direct.FRONT)
         if self.moving_left:
-            self._move_onedir(dphi=Direct.LEFT)
+            self._move_onedir(dangle=Direct.LEFT)
         if self.moving_back:
-            self._move_onedir(dphi=Direct.BACK)
+            self._move_onedir(dangle=Direct.BACK)
         if self.moving_right:
-            self._move_onedir(dphi=Direct.RIGHT)
+            self._move_onedir(dangle=Direct.RIGHT)
         if self.moving_cam_cw:
-            self.phi -= self.cam_v
-            if self.phi < 0: self.phi += 360
+            self.angle -= self.cam_speed
+            if self.angle < 0: self.angle += 360
         if self.moving_cam_ccw:
-            self.phi += self.cam_v
-            if self.phi > 360: self.phi -= 360
+            self.angle += self.cam_speed
+            if self.angle > 360: self.angle -= 360
     
-    def _move_onedir(self, dphi: int | float = 0) -> None:
+    def _move_onedir(self, dangle: int | float = 0) -> None:
         """Перемещение в одном направлении.
 
-        :param dphi: угол направления движения относительно направления взгляда
+        :param dangle: угол направления движения относительно направления взгляда
         игрока в градусах, по умолчанию 0
-        :type dphi: int | float
+        :type dangle: int | float
         """
-        self.x += self.v * cos((self.phi + dphi) * pi / 180)
-        self.y += -self.v * sin((self.phi + dphi) * pi / 180)
+        self.x += self.speed * cos((self.angle + dangle) * pi / 180)
+        self.y += -self.speed * sin((self.angle + dangle) * pi / 180)
 
 
 if __name__ == "__main__":

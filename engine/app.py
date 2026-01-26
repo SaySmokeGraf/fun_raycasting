@@ -56,11 +56,11 @@ class App:
             if self._flag_running:
                 self._scene.player.move()
                 x, y = self._scene.player.x, self._scene.player.y
-                phi = self._scene.player.phi
+                angle = self._scene.player.angle
                 level_map = self._scene.map
 
                 self._scene.solve_collisions()
-                self._drawer.upd_screen(x, y, phi, level_map)
+                self._drawer.upd_screen(x, y, angle, level_map)
                 self._clock.tick(FPS)
 
 

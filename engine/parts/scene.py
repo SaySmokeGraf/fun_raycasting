@@ -4,7 +4,7 @@ from math import floor
 
 from engine.parts.characters import Player
 from engine.parts.map import Map
-from levels.level import PLAYER_PHI0, PLAYER_X0, PLAYER_Y0, MAP_SCHEME
+from levels.level import PLAYER_ANGLE0, PLAYER_X0, PLAYER_Y0, MAP_SCHEME
 
 
 class Scene:
@@ -13,7 +13,7 @@ class Scene:
     def __init__(self) -> None:
         """Инициализация экземпляра класса."""
         self.map = Map(MAP_SCHEME)
-        self.player = Player(PLAYER_X0, PLAYER_Y0, PLAYER_PHI0)
+        self.player = Player(PLAYER_X0, PLAYER_Y0, PLAYER_ANGLE0)
 
     def solve_collisions(self):
         """Разрешить коллизии по необходимости."""
