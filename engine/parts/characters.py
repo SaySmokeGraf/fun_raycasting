@@ -1,9 +1,20 @@
-"""Модуль с объектами для движка."""
+"""Модуль с персонажами для движка."""
 
 from math import sin, cos, pi
 
-from engine.app_config import Direct
 from engine.settings import PLAYER_CAM_SPEED, PLAYER_SPEED, FPS
+
+
+_VECTOR_TO_ANGLE = {
+    (1, 0): 0,
+    (1, 1): 45,
+    (0, 1): 90,
+    (-1, 1): 135,
+    (-1, 0): 180,
+    (-1, -1): 225,
+    (0, -1): 270,
+    (1, -1): 315
+}
 
 
 class Player:
@@ -24,39 +35,74 @@ class Player:
         self._speed = PLAYER_SPEED / FPS
         self._cam_speed = PLAYER_CAM_SPEED / FPS
 
-        self.moving_front = False
-        self.moving_left = False
-        self.moving_back = False
-        self.moving_right = False
-        self.moving_cam_cw = False
-        self.moving_cam_ccw = False
+        self._moving_front = False
+        self._moving_left = False
+        self._moving_back = False
+        self._moving_right = False
+        self._moving_ccw = False
+        self._moving_cw = False
     
     def move(self) -> None:
         """Произвести перемещение и вращение."""
-        if self.moving_front:
-            self._move_onedir(dangle=Direct.FRONT)
-        if self.moving_left:
-            self._move_onedir(dangle=Direct.LEFT)
-        if self.moving_back:
-            self._move_onedir(dangle=Direct.BACK)
-        if self.moving_right:
-            self._move_onedir(dangle=Direct.RIGHT)
-        if self.moving_cam_cw:
-            self.angle -= self._cam_speed
-            if self.angle < 0: self.angle += 360
-        if self.moving_cam_ccw:
-            self.angle += self._cam_speed
-            if self.angle > 360: self.angle -= 360
+        front_back = self._moving_front - self._moving_back
+        left_right = self._moving_left - self._moving_right
+        if not (front_back == left_right == 0):
+            relative_angle = _VECTOR_TO_ANGLE[(front_back, left_right)]
+            cos_angle = cos((self.angle + relative_angle) * pi / 180)
+            sin_angle = sin((self.angle + relative_angle) * pi / 180)
+            self.x += self._speed * cos_angle
+            self.y += -self._speed * sin_angle
+        
+        ccw_cw = self._moving_ccw - self._moving_cw
+        self.angle = (self.angle + ccw_cw * self._cam_speed) % 360
     
-    def _move_onedir(self, dangle: int | float = 0) -> None:
-        """Перемещение в одном направлении.
+    def set_moving_front(self, is_moving: bool) -> None:
+        """Установить состояние движения вперед.
 
-        :param dangle: угол направления движения относительно направления взгляда
-        игрока в градусах, по умолчанию 0
-        :type dangle: int | float
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
         """
-        self.x += self._speed * cos((self.angle + dangle) * pi / 180)
-        self.y += -self._speed * sin((self.angle + dangle) * pi / 180)
+        self._moving_front = bool(is_moving)
+    
+    def set_moving_left(self, is_moving: bool) -> None:
+        """Установить состояние движения влево.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_left = bool(is_moving)
+    
+    def set_moving_back(self, is_moving: bool) -> None:
+        """Установить состояние движения назад.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_back = bool(is_moving)
+
+    def set_moving_right(self, is_moving: bool) -> None:
+        """Установить состояние движения вправо.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_right = bool(is_moving)
+    
+    def set_moving_ccw(self, is_moving: bool) -> None:
+        """Установить состояние вращения против часовой стрелки.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_ccw = bool(is_moving)
+    
+    def set_moving_cw(self, is_moving: bool) -> None:
+        """Установить состояние вращения по часовой стрелке.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_cw = bool(is_moving)
 
 
 if __name__ == "__main__":

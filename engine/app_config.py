@@ -7,15 +7,6 @@ from engine.settings import VFOV, STEPS_PER_UNIT, L_RENDER
 # пути
 PATH_ICON = 'res/icon.png'
 
-
-class Direct():
-    """Константы углов в градусах по направлениям."""
-    FRONT = 0
-    LEFT = 90
-    RIGHT = -90
-    BACK = 180
-
-
 # рассчитываемые константы
 COEFF_TAN = 1 / (2 * tan(pi * VFOV / 360))
 RAY_ONE_STEP = 1 / STEPS_PER_UNIT

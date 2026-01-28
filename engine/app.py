@@ -41,17 +41,17 @@ class App:
                     continue
                 
                 if event.key == pygame.K_w:
-                    self._scene.player.moving_front = flag_active
+                    self._scene.player.set_moving_front(flag_active)
                 elif event.key == pygame.K_a:
-                    self._scene.player.moving_left = flag_active
+                    self._scene.player.set_moving_left(flag_active)
                 elif event.key == pygame.K_s:
-                    self._scene.player.moving_back = flag_active
+                    self._scene.player.set_moving_back(flag_active)
                 elif event.key == pygame.K_d:
-                    self._scene.player.moving_right = flag_active
+                    self._scene.player.set_moving_right(flag_active)
                 elif event.key == pygame.K_LEFT:
-                    self._scene.player.moving_cam_ccw = flag_active
+                    self._scene.player.set_moving_ccw(flag_active)
                 elif event.key == pygame.K_RIGHT:
-                    self._scene.player.moving_cam_cw = flag_active
+                    self._scene.player.set_moving_cw(flag_active)
             
             if self._flag_running:
                 self._scene.player.move()
