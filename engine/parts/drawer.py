@@ -6,7 +6,7 @@ import pygame
 
 from engine.app_config import L_RENDER, COEFF_TAN, RAY_ONE_STEP, LIST_DISTS
 from engine.settings import H_RES, V_RES, FOV
-from engine.parts.map import Map
+from engine.parts.map import Map, MapCellTypes
 
 
 class Drawer:
@@ -93,7 +93,7 @@ class Drawer:
             floor_x = floor(x)
             floor_y = floor(y)
 
-            if map.get(floor_x, floor_y) == 1:
+            if map.get(floor_x, floor_y) == MapCellTypes.WALL:
                 return floor_x, floor_y, r
             
         return None, None, L_RENDER

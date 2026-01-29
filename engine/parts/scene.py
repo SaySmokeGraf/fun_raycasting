@@ -3,8 +3,14 @@
 from math import floor
 
 from engine.parts.characters import Player
-from engine.parts.map import Map
-from levels.level import PLAYER_ANGLE0, PLAYER_X0, PLAYER_Y0, MAP_SCHEME
+from engine.parts.map import Map, MapCellTypes
+from levels.level import (PLAYER_ANGLE0, PLAYER_X0, PLAYER_Y0,
+                          DEFAULT_CELL_VALUE, MAP_SCHEME)
+
+
+class ObjectsPlacementException(Exception):
+    """Исключение расположения объектов на сцене."""
+    pass
 
 
 class Scene:
@@ -12,14 +18,25 @@ class Scene:
 
     def __init__(self) -> None:
         """Инициализация экземпляра класса."""
-        self._map = Map(MAP_SCHEME)
+        self._map = Map(MAP_SCHEME, DEFAULT_CELL_VALUE)
         self._player = Player(PLAYER_X0, PLAYER_Y0, PLAYER_ANGLE0)
+        self._check_objects_placement()
+    
+    def _check_objects_placement(self) -> None:
+        """Проверить расположение объектов на сцене.
+
+        :raises ObjectsPlacementException: при неверном расположении игрока
+        """
+        player_cell = self._map.get(floor(PLAYER_X0), floor(PLAYER_Y0))
+        if player_cell == MapCellTypes.WALL:
+            exc_msg = 'Неверное расположение игрока!'
+            raise ObjectsPlacementException(exc_msg)
 
     def solve_collisions(self):
         """Разрешить коллизии по необходимости."""
         floor_x = floor(self._player.x)
         floor_y = floor(self._player.y)
-        if self._map.get(floor_x, floor_y) == 1:
+        if self._map.get(floor_x, floor_y) == MapCellTypes.WALL:
             dists = {'left': self._player.x - floor_x,
                      'right': floor_x + 1 - self._player.x,
                      'up': self._player.y - floor_y,
@@ -41,7 +58,7 @@ class Scene:
 
             floor_x = floor(self._player.x)
             floor_y = floor(self._player.y)
-            if self._map.get(floor_x, floor_y) == 1:
+            if self._map.get(floor_x, floor_y) == MapCellTypes.WALL:
                 key_min = min(dists, key=dists.get)
 
                 if key_min == 'left':
