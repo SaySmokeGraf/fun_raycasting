@@ -2,7 +2,8 @@
 
 import pygame
 
-from config import *
+from engine.app_config import PATH_ICON
+from engine.settings import H_RES, V_RES, FPS
 from engine.parts.scene import Scene
 from engine.parts.drawer import Drawer
 
@@ -40,26 +41,26 @@ class App:
                     continue
                 
                 if event.key == pygame.K_w:
-                    self._scene.player.moving_front = flag_active
+                    self._scene.player.set_moving_front(flag_active)
                 elif event.key == pygame.K_a:
-                    self._scene.player.moving_left = flag_active
+                    self._scene.player.set_moving_left(flag_active)
                 elif event.key == pygame.K_s:
-                    self._scene.player.moving_back = flag_active
+                    self._scene.player.set_moving_back(flag_active)
                 elif event.key == pygame.K_d:
-                    self._scene.player.moving_right = flag_active
+                    self._scene.player.set_moving_right(flag_active)
                 elif event.key == pygame.K_LEFT:
-                    self._scene.player.moving_cam_ccw = flag_active
+                    self._scene.player.set_moving_ccw(flag_active)
                 elif event.key == pygame.K_RIGHT:
-                    self._scene.player.moving_cam_cw = flag_active
+                    self._scene.player.set_moving_cw(flag_active)
             
             if self._flag_running:
                 self._scene.player.move()
                 x, y = self._scene.player.x, self._scene.player.y
-                phi = self._scene.player.phi
-                level_map = self._scene.lvl_map
+                angle = self._scene.player.angle
+                level_map = self._scene.map
 
                 self._scene.solve_collisions()
-                self._drawer.upd_screen(x, y, phi, level_map)
+                self._drawer.upd_screen(x, y, angle, level_map)
                 self._clock.tick(FPS)
 
 

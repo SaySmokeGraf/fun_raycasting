@@ -1,14 +1,29 @@
-"""Модуль с объектами для движка."""
+"""Модуль с персонажами для движка."""
 
 from math import sin, cos, pi
 
-from config import *
+from engine.parts.colliders import SquareCollider
+from engine.settings import (PLAYER_CAM_SPEED, PLAYER_SPEED, PLAYER_SIDE,
+                             FPS)
+
+
+_VECTOR_TO_ANGLE = {
+    (1, 0): 0,
+    (1, 1): 45,
+    (0, 1): 90,
+    (-1, 1): 135,
+    (-1, 0): 180,
+    (-1, -1): 225,
+    (0, -1): 270,
+    (1, -1): 315
+}
 
 
 class Player:
     """Класс игрока."""
 
-    def __init__(self, x0: int | float, y0: int | float) -> None:
+    def __init__(self, x0: int | float, y0: int | float,
+                 angle0: int | float) -> None:
         """Инициализация экземпляра класса.
 
         :param x0: начальная координата x
@@ -16,45 +31,99 @@ class Player:
         :param y0: начальная координата y
         :type y0: int | float
         """
-        self.x = x0
-        self.y = y0
-        self.phi = PHI_START
-        self.v = PLAYER_SPEED / FPS
-        self.cam_v = PLAYER_CAM_SPEED / FPS
+        self._angle = angle0
+        self._collider = SquareCollider(x0, y0, PLAYER_SIDE)
+        self._speed = PLAYER_SPEED / FPS
+        self._cam_speed = PLAYER_CAM_SPEED / FPS
 
-        self.moving_front = False
-        self.moving_left = False
-        self.moving_back = False
-        self.moving_right = False
-        self.moving_cam_cw = False
-        self.moving_cam_ccw = False
+        self._moving_front = False
+        self._moving_left = False
+        self._moving_back = False
+        self._moving_right = False
+        self._moving_ccw = False
+        self._moving_cw = False
     
     def move(self) -> None:
         """Произвести перемещение и вращение."""
-        if self.moving_front:
-            self._move_onedir(dphi=Direct.FRONT)
-        if self.moving_left:
-            self._move_onedir(dphi=Direct.LEFT)
-        if self.moving_back:
-            self._move_onedir(dphi=Direct.BACK)
-        if self.moving_right:
-            self._move_onedir(dphi=Direct.RIGHT)
-        if self.moving_cam_cw:
-            self.phi -= self.cam_v
-            if self.phi < 0: self.phi += 360
-        if self.moving_cam_ccw:
-            self.phi += self.cam_v
-            if self.phi > 360: self.phi -= 360
+        front_back = self._moving_front - self._moving_back
+        left_right = self._moving_left - self._moving_right
+        if not (front_back == left_right == 0):
+            relative_angle = _VECTOR_TO_ANGLE[(front_back, left_right)]
+            cos_angle = cos((self._angle + relative_angle) * pi / 180)
+            sin_angle = sin((self._angle + relative_angle) * pi / 180)
+            self._collider.move(self._speed * cos_angle,
+                                -self._speed * sin_angle)
+        
+        ccw_cw = self._moving_ccw - self._moving_cw
+        self._angle = (self._angle + ccw_cw * self._cam_speed) % 360
     
-    def _move_onedir(self, dphi: int | float = 0) -> None:
-        """Перемещение в одном направлении.
+    def set_moving_front(self, is_moving: bool) -> None:
+        """Установить состояние движения вперед.
 
-        :param dphi: угол направления движения относительно направления взгляда
-        игрока в градусах, по умолчанию 0
-        :type dphi: int | float
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
         """
-        self.x += self.v * cos((self.phi + dphi) * pi / 180)
-        self.y += -self.v * sin((self.phi + dphi) * pi / 180)
+        self._moving_front = bool(is_moving)
+    
+    def set_moving_left(self, is_moving: bool) -> None:
+        """Установить состояние движения влево.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_left = bool(is_moving)
+    
+    def set_moving_back(self, is_moving: bool) -> None:
+        """Установить состояние движения назад.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_back = bool(is_moving)
+
+    def set_moving_right(self, is_moving: bool) -> None:
+        """Установить состояние движения вправо.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_right = bool(is_moving)
+    
+    def set_moving_ccw(self, is_moving: bool) -> None:
+        """Установить состояние вращения против часовой стрелки.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_ccw = bool(is_moving)
+    
+    def set_moving_cw(self, is_moving: bool) -> None:
+        """Установить состояние вращения по часовой стрелке.
+
+        :param is_moving: флаг наличия движения в направлении
+        :type is_moving: bool
+        """
+        self._moving_cw = bool(is_moving)
+    
+    @property
+    def collider(self) -> SquareCollider:
+        """Коллайдер игрока."""
+        return self._collider
+    
+    @property
+    def x(self) -> float:
+        """Координата x."""
+        return self._collider.x
+    
+    @property
+    def y(self) -> float:
+        """Координата y."""
+        return self._collider.y
+    
+    @property
+    def angle(self) -> float:
+        """Угол направления взгляда в градусах."""
+        return self._angle
 
 
 if __name__ == "__main__":

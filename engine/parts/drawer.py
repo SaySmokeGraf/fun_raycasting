@@ -4,7 +4,9 @@ from math import floor, pi, sin, cos
 
 import pygame
 
-from config import *
+from engine.app_config import L_RENDER, COEFF_TAN, RAY_ONE_STEP, LIST_DISTS
+from engine.settings import H_RES, V_RES, FOV
+from engine.parts.map import Map, MapCellTypes
 
 
 class Drawer:
@@ -19,21 +21,21 @@ class Drawer:
         self._screen = screen
 
     def upd_screen(self, x: int | float, y: int | float,
-                    phi: int | float, map: list[list[str]]) -> None:
+                    angle: int | float, map: Map) -> None:
         """Обновить экран.
 
         :param x: координата x игрока
         :type x: int | float
         :param y: координата y игрока
         :type y: int | float
-        :param phi: направление взгряда игрока в градусах
-        :type phi: int | float
+        :param angle: направление взгряда игрока в градусах
+        :type angle: int | float
         :param map: карта уровня
-        :type map: list[list[str]]
+        :type map: Map
         """
         pygame.draw.rect(self._screen, (0, 0, 0), (0, 0, H_RES, V_RES))
         one_step = FOV / H_RES
-        max_angle = phi + FOV / 2
+        max_angle = angle + FOV / 2
         floor_x_old, floor_y_old, _ = self._send_ray(x, y,
                                                  max_angle - 0 * one_step,
                                                  map)
@@ -63,18 +65,18 @@ class Drawer:
             
         pygame.display.update()
 
-    def _send_ray(self, x: int | float, y: int | float, phi: int | float,
-                  map: list[list[str]]) -> tuple[int | float | None]:
+    def _send_ray(self, x: int | float, y: int | float, angle: int | float,
+                  map: Map) -> tuple[int | float | None]:
         """Отправить луч.
 
         :param x: координата x точки отправления луча
         :type x: int | float
         :param y: координата y точки отправления луча
         :type y: int | float
-        :param phi: угол направления луча
-        :type phi: int | float
+        :param angle: угол направления луча
+        :type angle: int | float
         :param map: карта
-        :type map: list[list[str]]
+        :type map: Map
 
         :return: набор данных об окончании пути луча в формате: x в клетках, y
         в клетках, расстояние до точки пересечения со стеной. В случае
@@ -82,8 +84,8 @@ class Drawer:
         длину рендера
         :rtype: tuple[int | float | None]
         """
-        one_step_x = RAY_ONE_STEP * cos(phi * pi / 180)
-        one_step_y = RAY_ONE_STEP * sin(phi * pi / 180)
+        one_step_x = RAY_ONE_STEP * cos(angle * pi / 180)
+        one_step_y = RAY_ONE_STEP * sin(angle * pi / 180)
 
         for r in LIST_DISTS:
             x += one_step_x
@@ -91,7 +93,7 @@ class Drawer:
             floor_x = floor(x)
             floor_y = floor(y)
 
-            if map[floor_y][floor_x] == '1':
+            if map.get(floor_x, floor_y) == MapCellTypes.WALL:
                 return floor_x, floor_y, r
             
         return None, None, L_RENDER
