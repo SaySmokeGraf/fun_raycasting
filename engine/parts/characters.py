@@ -2,7 +2,9 @@
 
 from math import sin, cos, pi
 
-from engine.settings import PLAYER_CAM_SPEED, PLAYER_SPEED, FPS
+from engine.parts.colliders import SquareCollider
+from engine.settings import (PLAYER_CAM_SPEED, PLAYER_SPEED, PLAYER_SIDE,
+                             FPS)
 
 
 _VECTOR_TO_ANGLE = {
@@ -29,9 +31,8 @@ class Player:
         :param y0: начальная координата y
         :type y0: int | float
         """
-        self.x = x0
-        self.y = y0
-        self.angle = angle0
+        self._angle = angle0
+        self._collider = SquareCollider(x0, y0, PLAYER_SIDE)
         self._speed = PLAYER_SPEED / FPS
         self._cam_speed = PLAYER_CAM_SPEED / FPS
 
@@ -48,13 +49,13 @@ class Player:
         left_right = self._moving_left - self._moving_right
         if not (front_back == left_right == 0):
             relative_angle = _VECTOR_TO_ANGLE[(front_back, left_right)]
-            cos_angle = cos((self.angle + relative_angle) * pi / 180)
-            sin_angle = sin((self.angle + relative_angle) * pi / 180)
-            self.x += self._speed * cos_angle
-            self.y += -self._speed * sin_angle
+            cos_angle = cos((self._angle + relative_angle) * pi / 180)
+            sin_angle = sin((self._angle + relative_angle) * pi / 180)
+            self._collider.move(self._speed * cos_angle,
+                                -self._speed * sin_angle)
         
         ccw_cw = self._moving_ccw - self._moving_cw
-        self.angle = (self.angle + ccw_cw * self._cam_speed) % 360
+        self._angle = (self._angle + ccw_cw * self._cam_speed) % 360
     
     def set_moving_front(self, is_moving: bool) -> None:
         """Установить состояние движения вперед.
@@ -103,6 +104,26 @@ class Player:
         :type is_moving: bool
         """
         self._moving_cw = bool(is_moving)
+    
+    @property
+    def collider(self) -> SquareCollider:
+        """Коллайдер игрока."""
+        return self._collider
+    
+    @property
+    def x(self) -> float:
+        """Координата x."""
+        return self._collider.x
+    
+    @property
+    def y(self) -> float:
+        """Координата y."""
+        return self._collider.y
+    
+    @property
+    def angle(self) -> float:
+        """Угол направления взгляда в градусах."""
+        return self._angle
 
 
 if __name__ == "__main__":

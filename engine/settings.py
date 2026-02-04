@@ -14,6 +14,7 @@ VFOV = 60               # [градусы]
 # параметры игрока
 PLAYER_SPEED = 1.0      # [клетки/с]
 PLAYER_CAM_SPEED = 90   # [градусы/с]
+PLAYER_SIDE = 0.2     # [клетки]
 
 
 if __name__ == "__main__":

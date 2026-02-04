@@ -33,42 +33,13 @@ class Scene:
             raise ObjectsPlacementException(exc_msg)
 
     def solve_collisions(self):
-        """Разрешить коллизии по необходимости."""
-        floor_x = floor(self._player.x)
-        floor_y = floor(self._player.y)
-        if self._map.get(floor_x, floor_y) == MapCellTypes.WALL:
-            dists = {'left': self._player.x - floor_x,
-                     'right': floor_x + 1 - self._player.x,
-                     'up': self._player.y - floor_y,
-                     'down': floor_y + 1 - self._player.y}
-            key_min = min(dists, key=dists.get)
-            
-            if key_min == 'left':
-                self._player.x = floor_x
-                del dists['left']
-            elif key_min == 'right':
-                self._player.x = floor_x + 1
-                del dists['right']
-            elif key_min == 'up':
-                self._player.y = floor_y
-                del dists['up']
-            elif key_min == 'down':
-                self._player.y = floor_y + 1
-                del dists['down']
-
-            floor_x = floor(self._player.x)
-            floor_y = floor(self._player.y)
-            if self._map.get(floor_x, floor_y) == MapCellTypes.WALL:
-                key_min = min(dists, key=dists.get)
-
-                if key_min == 'left':
-                    self._player.x = floor_x
-                elif key_min == 'right':
-                    self._player.x = floor_x + 1
-                elif key_min == 'up':
-                    self._player.y = floor_y
-                elif key_min == 'down':
-                    self._player.y = floor_y + 1
+        """Решить коллизии по необходимости."""
+        points = self._player.collider.points
+        for point in points:
+            cell = self._map.get(floor(point.x), floor(point.y))
+            if cell == MapCellTypes.WALL:
+                point.is_collided = True
+        self._player.collider.solve_collisions()
     
     @property
     def map(self) -> Map:
